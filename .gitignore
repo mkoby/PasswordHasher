@@ -1,0 +1,16 @@
+obj
+bin
+deploy
+build
+deploy/*
+_ReSharper.*
+*.csproj.user
+*.resharper.user
+*.resharper
+*.suo
+*.cache
+*.usertasks
+*.userprefs
+*.pidb
+test-results
+
