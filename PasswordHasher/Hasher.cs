@@ -7,24 +7,42 @@ namespace PasswordHasher
     internal class Hasher
     {
         private HashAlgorithm _hashType = null;
-        private string _stringHash = String.Empty;
-        private string _hexHash = String.Empty;
+        private string _valueToHash = String.Empty;
 
-        public string StringHashResult { get { return _stringHash; } }
-        public string HexHashResult { get { return _hexHash; } }
-
-        public Hasher(string hashType)
+        public string StringHashResult
         {
-            _hashType = GetHashAlgorithm(hashType);
+            get
+            {
+                return HashPassword(_valueToHash, true);
+            }
         }
 
-        public void HashPassword(string passwordToHash)
+        public string HexHashResult
+        {
+            get
+            {
+                return HashPassword(_valueToHash, false);
+            }
+        }
+
+        public Hasher(string hashType, string valueToHash)
+        {
+            _hashType = GetHashAlgorithm(hashType);
+
+            if (!String.IsNullOrEmpty(valueToHash) && valueToHash != _valueToHash)
+                _valueToHash = valueToHash;
+        }
+
+        private string HashPassword(string passwordToHash, bool returnStringHash)
         {
             byte[] textByteArray = Encoding.ASCII.GetBytes(passwordToHash);
             byte[] hashedBytes = _hashType.ComputeHash(textByteArray);
 
-            _stringHash = Convert.ToBase64String(hashedBytes);
-            _hexHash = BitConverter.ToString(hashedBytes).Replace("-", "");
+            if(returnStringHash)
+                return Convert.ToBase64String(hashedBytes);
+            
+            //We're retunring the Hex Hash
+            return BitConverter.ToString(hashedBytes).Replace("-", "");
         }
 
         private HashAlgorithm GetHashAlgorithm(string hashType)

@@ -7,9 +7,9 @@ namespace PasswordHasher
     {
         private Hasher _hasher = null;
 
-        private void SetHasher()
+        private void SetHasher(string valueToHash)
         {
-            _hasher = new Hasher(comboHashType.SelectedItem.ToString());
+            _hasher = new Hasher(comboHashType.SelectedItem.ToString(), valueToHash);
         }
 
         private void LoadHashTypesCombobox()
@@ -27,7 +27,6 @@ namespace PasswordHasher
         private void Form1_Load(object sender, EventArgs e)
         {
             LoadHashTypesCombobox();
-            SetHasher();
         }
 
         private void buttonSubmit_Click(object sender, EventArgs e)
@@ -47,15 +46,19 @@ namespace PasswordHasher
             txtStringHashResult.Text = String.Empty;
             txtHexHashResult.Text = String.Empty;
 
-            _hasher.HashPassword(txtPassword.Text);
-
             txtStringHashResult.Text = _hasher.StringHashResult;
             txtHexHashResult.Text = _hasher.HexHashResult;
         }
 
         private void comboHashType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SetHasher();
+            if (!String.IsNullOrEmpty(txtPassword.Text))
+                SetHasher(txtPassword.Text);
+        }
+
+        private void txtPassword_TextChanged(object sender, EventArgs e)
+        {
+            SetHasher(txtPassword.Text);
         }
     }
 }
